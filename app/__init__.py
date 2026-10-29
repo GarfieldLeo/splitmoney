@@ -1,0 +1,1 @@
+"""Splitmoney application package."""

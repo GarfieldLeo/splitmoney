@@ -1,6 +1,6 @@
 # Splitmoney implementation plans
 
-Turn the goals in [`../init_plan`](../init_plan) into small, independently verifiable changes. These files are the single source of truth for the planned work and its implementation progress. Their initial state records planning only; no implementation is claimed.
+Turn the goals in [`../init_plan`](../init_plan) into small, independently verifiable changes. These files are the single source of truth for the planned work and its implementation progress. Each step's Progress section records its current implementation status, verification evidence, decisions, and any remaining limitations.
 
 ## Product goal
 
@@ -26,6 +26,10 @@ Each step is intended to be one focused implementation change. Paths mentioned i
 - Mark Complete only when the entire step and its required acceptance checks are satisfied. A required unavailable check remains outstanding; optional coverage limitations must be explicit. Reopen a completed step if later changes invalidate its acceptance evidence.
 - Keep QA results inside the relevant QA step's Progress section. Logs and screenshots can live in supporting files, but do not create a separate status tracker or QA report with competing conclusions. Backend/frontend step evidence belongs in its own step; QA steps link it instead of copying its status.
 - The shared contract is authoritative for cross-feature behavior; each step file owns its implementation instructions and progress. Update both in the same change when decisions affect the contract. Revise plans that no longer match the agreed implementation, recording why in Decisions and deviations. `init_plan` remains the original brief; chat messages and commit messages do not replace the plan records.
+
+## Agent execution and review
+
+Implementation is assigned one step per GPT-6 Luna subagent with extra-high reasoning. An independent GPT-6.1 Terra subagent with high reasoning reviews and tests each completed step. The coordinating agent manages dependencies, checks integration, and sends defects back for correction. Record each review's actual result in the step's Progress section; a reviewer must not edit that section while its implementing agent is still updating it.
 
 ## Backend track
 

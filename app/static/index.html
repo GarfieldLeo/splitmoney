@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f4f2eb">
+    <meta name="description" content="A simple shared expense ledger for your group.">
+    <title>Splitmoney</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script type="module" src="/static/js/app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="app-header">
+        <a class="brand" href="#overview" aria-label="Splitmoney home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 28 28" focusable="false">
+              <path d="M7.5 9.25h13M7.5 14h8.75M7.5 18.75h5" />
+              <circle cx="20.5" cy="18.75" r="2" />
+            </svg>
+          </span>
+          <span class="brand-name">splitmoney</span>
+        </a>
+        <div class="account-area" id="account-area" hidden>
+          <span class="account-label">Using</span>
+          <span class="account-name" id="account-name"></span>
+          <button class="switch-user-button" id="switch-user" type="button">Switch user</button>
+        </div>
+      </header>
+
+      <div class="global-status" id="global-status" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+
+      <main class="main-content" id="main-content" tabindex="-1">
+        <div class="content-root" id="content-root" aria-live="off"></div>
+      </main>
+
+      <nav class="bottom-nav" id="primary-navigation" aria-label="Main navigation" hidden>
+        <a class="nav-item" href="#overview" data-route="overview">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.75 10.5 12 4l8.25 6.5v8a1.75 1.75 0 0 1-1.75 1.75h-13a1.75 1.75 0 0 1-1.75-1.75z"/><path d="M9 20.25v-6.5h6v6.5"/></svg>
+          <span>Overview</span>
+        </a>
+        <a class="nav-item" href="#expenses" data-route="expenses">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.25 4.25h13.5a1.5 1.5 0 0 1 1.5 1.5v14l-2.75-1.6-2.75 1.6L12 18.15l-2.75 1.6-2.75-1.6-2.75 1.6v-14a1.5 1.5 0 0 1 1.5-1.5Z"/><path d="M8 9h8M8 13h5"/></svg>
+          <span>Expenses</span>
+        </a>
+        <a class="nav-item" href="#payments" data-route="payments">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.25h16M6.25 4.75h11.5A2.25 2.25 0 0 1 20 7v10a2.25 2.25 0 0 1-2.25 2.25H6.25A2.25 2.25 0 0 1 4 17V7a2.25 2.25 0 0 1 2.25-2.25Z"/><path d="M15.5 14.25h1.25"/></svg>
+          <span>Payments</span>
+        </a>
+        <a class="nav-item" href="#people" data-route="people">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.25"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16.25 5a3.1 3.1 0 0 1 0 6M17 14a5 5 0 0 1 3.5 4.75"/></svg>
+          <span>People</span>
+        </a>
+      </nav>
+    </div>
+  </body>
+</html>

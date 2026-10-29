@@ -4,43 +4,53 @@
 
 This section is the authoritative implementation and verification record for F04. Update it in the same change as the work; follow the [tracking rules](../README.md#progress-tracking-rules).
 
-- **Status:** Not started
+- **Status:** Complete
 - **Last updated:** 2026-10-29
-- **Current summary:** Plan written; this step has not been implemented or verified.
+- **Current summary:** Implemented the Overview balances dashboard and Payments CRUD/review editor against the live API. The focused real-backend browser suite passes all ten scenarios, including the primary balance journey, payment review/CRUD, network handling, refresh coalescing, user switching, and 320px layout.
 
 ### Completion checklist
 
-- [ ] Implement all deliverables and instructions in this step.
-- [ ] Execute the required tests and acceptance checks; record actual results below.
-- [ ] Update affected documentation/contracts and record any deviations or limitations.
+- [x] Implement all deliverables and instructions in this step.
+- [x] Execute the required tests and acceptance checks; record actual results below.
+- [x] Update affected documentation/contracts and record any deviations or limitations.
 
 ### Completed work and changed files
 
-None yet. Record completed sub-tasks and the relevant file paths as implementation proceeds.
+- Added the Overview balance summary, complete group component breakdown, live suggestions, and review-only payment form in app/static/js/overview.js; added responsive styles in app/static/overview.css.
+- Added recorded payment list/create/edit/delete, exact-string validation, self-payment checks, refresh/retry handling, pending write locks, and reusable suggestion editor in app/static/js/settlements.js; added responsive styles in app/static/settlements.css.
+- Added real-backend browser coverage in tests/browser/balances-and-payments.spec.js for the Q02 step-7 balances, suggestion cancel/record, manual overpayment, edit/delete reversals, validation, refresh preservation/coalescing, pending saves, ambiguous writes, switching users, empty state, and 320px layout.
+- Q03's touch-target audit raised `.settlement-action` from a 42px to 44px minimum. Q03's final browser matrix will verify the rendered size; this CSS adjustment has not yet been measured in-browser.
+- Q03's contrast review moved payment dates and Overview component labels/kickers to the shared muted token; final browser review remains pending.
 
 ### Verification evidence
 
 | Date | Command or manual scenario | Environment / data | Result and evidence |
 | --- | --- | --- | --- |
-| — | Not run | — | No implementation or verification evidence yet. |
+| 2026-10-29 | Independent QA: `npm run test:browser -- tests/browser/balances-and-payments.spec.js tests/browser/qa-regression.spec.js --workers=1 --reporter=line --output /tmp/splitmoney-qa-f04`; after fix, QA regression `-g 'group balance labels' --output /tmp/splitmoney-qa-group-cents` | Chromium, isolated live API and temporary SQLite files; injected large aggregate balance | **Initial:** 14 passed, 1 failed: group labels rounded `100000000000000.01` to `.02`. **After correction:** focused group-label regression passed. All 10 F04 scenarios passed, including personal receive/pay wording, payment direction, review/cancel, overpayment, refresh and pending locks. |
+| 2026-10-29 | node --check app/static/js/overview.js && node --check app/static/js/settlements.js && node --check tests/browser/balances-and-payments.spec.js | Node.js module syntax checks | Passed. |
+| 2026-10-29 | npx playwright test tests/browser/balances-and-payments.spec.js (initial run) | Chromium; isolated FastAPI server and temporary SQLite database per browser test | 7 passed, 2 failed. One assertion targeted the wrong heading semantics and one fixture username exceeded the 40-character limit; corrected both. |
+| 2026-10-29 | npx playwright test tests/browser/balances-and-payments.spec.js (overlapped F03 browser run) | Chromium; four F04 workers plus a concurrent four-worker F03 run | Run was stopped after all nine cases hit app-server teardown timeouts under browser contention. One broad accessible-label selector collision found in the 320px test was scoped to the editor. Final serial rerun remains. |
+| 2026-10-29 | npx playwright test tests/browser/balances-and-payments.spec.js --workers=1 --reporter=line --output=/tmp/splitmoney-f04-final-rerun | Chromium; isolated FastAPI server and temporary SQLite database per browser test | 10 passed. The first serial run had 9 pass and one incorrect recipient expectation in the mobile suggestion test; corrected it and reran all ten successfully. Covers the exact +$15/+15/-$30 fixture, canceled and recorded suggestions, settled state, manual overpayment, edit/delete reversals, invalid/self payment, external refresh, failed refresh preserving form, foreground/manual request coalescing, accepted and ambiguous write outcomes without replay, pending-action locks after refresh, switching users, empty states, and 320px overflow. |
 
-Replace the placeholder with actual results, including failures and unexecuted checks. Link supporting logs/screenshots where useful; this table remains the authoritative summary.
+The final serial focused browser suite and syntax checks passed. Earlier assertion/test-contention failures and their corrections are retained above.
 
 ### Decisions and deviations
 
-None yet. Record the reason for any change to this plan and update the shared contract if cross-feature behavior changes.
+No shared-contract changes were needed. Suggested payments are reloaded before opening the review form, and mutations reload canonical people, recorded payments, and balances. A shared editor is used in both Overview and Payments.
 
 ### Remaining work and blockers
 
-All implementation and acceptance work described below remains. No blocker has been identified; prerequisites still need to be checked before starting.
+No F04 implementation or acceptance work remains. No blocker was identified.
 
-**Next action:** After F01–F03 and B06–B08, render real balances and add the payment review form.
+**Next action:** Independent integration review by the coordinator; reopen this step if that review finds a defect.
 
 ### Progress log
 
 | Date | Status | Update |
 | --- | --- | --- |
-| 2026-10-29 | Not started | Added the plan and its progress record; no implementation claimed. |
+| 2026-10-29 | In progress | Began F04 after confirming its prerequisites and the shell feature-module contract. |
+| 2026-10-29 | In progress | Implemented the two feature modules and responsive styles, added ten real-API browser scenarios, and corrected issues found during initial and contended runs. |
+| 2026-10-29 | Complete | Final serial F04 browser suite passed all ten scenarios; feature modules, responsive styles, editor lifecycle protections, and progress evidence are complete. |
 
 ## Goal
 

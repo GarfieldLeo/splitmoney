@@ -62,6 +62,21 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# Splitmoney local database and SQLite sidecar files
+/data/
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.sqlite3-journal
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3-wal
+*.sqlite3-shm
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
 # Flask stuff:
 instance/
 .webassets-cache
@@ -153,6 +168,9 @@ activemq-data/
 .env
 .envrc
 .venv
+node_modules/
+test-results/
+playwright-report/
 env/
 venv/
 ENV/

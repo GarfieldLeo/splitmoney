@@ -4,43 +4,47 @@
 
 This section is the authoritative implementation and verification record for B02. Update it in the same change as the work; follow the [tracking rules](../README.md#progress-tracking-rules).
 
-- **Status:** Not started
+- **Status:** Complete
 - **Last updated:** 2026-10-29
-- **Current summary:** Plan written; this step has not been implemented or verified.
+- **Current summary:** Exact cent conversion, identity normalization, strict request/response schemas, PATCH presence rules, and B02 unit tests are implemented. The isolated acceptance suite passes.
 
 ### Completion checklist
 
-- [ ] Implement all deliverables and instructions in this step.
-- [ ] Execute the required tests and acceptance checks; record actual results below.
-- [ ] Update affected documentation/contracts and record any deviations or limitations.
+- [x] Implement all deliverables and instructions in this step.
+- [x] Execute the required tests and acceptance checks; record actual results below.
+- [x] Update affected documentation/contracts and record any deviations or limitations.
 
 ### Completed work and changed files
 
-None yet. Record completed sub-tasks and the relevant file paths as implementation proceeds.
+Implemented exact money conversion and formatting in `app/money.py`; Unicode username, phone, and UUID helpers in `app/identity.py`; strict request, response, health, error, and balance schemas in `app/schemas.py`; and focused tests in `tests/test_money.py` and `tests/test_validation.py`. The response models keep cents internal and public amounts as decimal strings. PATCH models preserve omitted versus explicit-null fields, reject empty patches, and reject null required values. Explicit target IDs are canonicalized, deduplicated, sorted, and empty lists become null.
 
 ### Verification evidence
 
 | Date | Command or manual scenario | Environment / data | Result and evidence |
 | --- | --- | --- | --- |
-| — | Not run | — | No implementation or verification evidence yet. |
+| 2026-10-29 | `.venv/bin/python -m pytest tests/test_money.py tests/test_validation.py` | Python 3.11.6; project `.venv` with pytest 9.2.0 and Pydantic v2 | Passed: **59 passed** in 0.04s. One Starlette deprecation warning from the installed FastAPI test-client dependency; no B02 test failures. |
+| 2026-10-29 | `.venv/bin/python -m compileall -q app/money.py app/identity.py app/schemas.py tests/test_money.py tests/test_validation.py` | Same project virtual environment | Passed: all owned modules and tests compiled. |
+| 2026-10-29 | Independent QA: `.venv/bin/python -m pytest tests/test_money.py tests/test_validation.py -q` and direct validation probes | Project `.venv`; Unicode fullwidth name, leading-zero money, null/empty targets and self-settlement | **Passed:** 59 tests; probes confirmed normalization, exact cents, target reset presence, and self-settlement rejection. One Starlette deprecation warning. |
 
 Replace the placeholder with actual results, including failures and unexecuted checks. Link supporting logs/screenshots where useful; this table remains the authoritative summary.
 
 ### Decisions and deviations
 
-None yet. Record the reason for any change to this plan and update the shared contract if cross-feature behavior changes.
+No contract deviations. `validate_settlement_participants(payer_id, target_user_id)` is provided so a service can check a one-sided settlement PATCH after merging the omitted participant from storage. Aggregate balance and suggested-payment schemas accept values larger than the per-record amount ceiling.
 
 ### Remaining work and blockers
 
-All implementation and acceptance work described below remains. No blocker has been identified; prerequisites still need to be checked before starting.
+No B02 work remains. The full application API suite depends on later CRUD and database steps.
 
-**Next action:** After B01, implement exact amount parsing/formatting and their unit tests.
+**Next action:** B03 and CRUD steps can import the helper and schema names recorded in this module.
 
 ### Progress log
 
 | Date | Status | Update |
 | --- | --- | --- |
 | 2026-10-29 | Not started | Added the plan and its progress record; no implementation claimed. |
+| 2026-10-29 | In progress | Reviewed contract and dependencies; started money, identity, and strict schema helpers. |
+| 2026-10-29 | Complete | Added request/response schemas and 59 unit assertions; isolated B02 tests and compile check passed. |
 
 ## Goal
 

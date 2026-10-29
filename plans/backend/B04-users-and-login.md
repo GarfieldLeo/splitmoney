@@ -4,43 +4,47 @@
 
 This section is the authoritative implementation and verification record for B04. Update it in the same change as the work; follow the [tracking rules](../README.md#progress-tracking-rules).
 
-- **Status:** Not started
+- **Status:** Complete
 - **Last updated:** 2026-10-29
-- **Current summary:** Plan written; this step has not been implemented or verified.
+- **Current summary:** User service and `/api/login`/user CRUD routes are implemented and registered. Focused B04 coverage and the full repository suite pass.
 
 ### Completion checklist
 
-- [ ] Implement all deliverables and instructions in this step.
-- [ ] Execute the required tests and acceptance checks; record actual results below.
-- [ ] Update affected documentation/contracts and record any deviations or limitations.
+- [x] Implement all deliverables and instructions in this step.
+- [x] Execute the required tests and acceptance checks; record actual results below.
+- [x] Update affected documentation/contracts and record any deviations or limitations.
 
 ### Completed work and changed files
 
-None yet. Record completed sub-tasks and the relevant file paths as implementation proceeds.
+Implemented the user service, API routes, package initializers, route registration in `app/main.py`, and 19 API tests. Login and direct creation share the contract's normalized username key; login preserves the existing display name and uses a write transaction. User deletion checks expense payers, explicit target JSON, everyone expenses (including a stored empty target array), and both settlement participants in one write transaction. Rename changes only the user row.
 
 ### Verification evidence
 
 | Date | Command or manual scenario | Environment / data | Result and evidence |
 | --- | --- | --- | --- |
-| — | Not run | — | No implementation or verification evidence yet. |
+| 2026-10-29 | `.venv/bin/python -m pytest tests/test_users_api.py` | Project `.venv`, Python 3.11.6, file-backed temporary SQLite DBs via app fixture | **Passed:** 19 tests. Covers user CRUD and public fields, phone cleanup, stable ordering, case/padding-insensitive login, concurrent same-name login, direct duplicate and rename conflicts, invalid payload/path validation envelope, missing IDs, all six deletion protections, UUID reference preservation on rename, and deletion without collateral row removal. One Starlette `httpx` deprecation warning. |
+| 2026-10-29 | `.venv/bin/python -m pytest` | Project `.venv`, Python 3.11.6, all repository tests | **Passed:** 112 tests. Includes B04 routes registered in the real app factory and the existing DB, health, money, validation, balance, and regression tests. One Starlette `httpx` deprecation warning. |
+| 2026-10-29 | Independent QA: `.venv/bin/python -m pytest tests/test_users_api.py -q` and concurrent Unicode login/API probes | Project `.venv`, file-backed temporary database; 16 concurrent `Straße`/`STRASSE` variants | **Passed:** 19 tests; logins converged on one UUID, duplicate direct creation returned 409, and uppercase UUID paths worked for read, rename, and delete. Reviewed atomic reference checks, empty-array everyone protection, and UUID-preserving rename. One Starlette deprecation warning. |
 
-Replace the placeholder with actual results, including failures and unexecuted checks. Link supporting logs/screenshots where useful; this table remains the authoritative summary.
+The tests run in this environment are recorded above; the deprecation warning is from Starlette's use of `httpx` in `TestClient`.
 
 ### Decisions and deviations
 
-None yet. Record the reason for any change to this plan and update the shared contract if cross-feature behavior changes.
+No contract deviation. A stored empty target array is treated as an everyone expense during deletion checks, consistent with the contract's null-or-empty semantics and the DB helper's decoding behavior.
 
 ### Remaining work and blockers
 
-All implementation and acceptance work described below remains. No blocker has been identified; prerequisites still need to be checked before starting.
+No B04 work remains. B01–B03 prerequisites are complete, and the focused plus full test commands passed.
 
-**Next action:** After B01–B03, implement user services and case-insensitive login with API tests.
+**Next action:** B05 can build on the registered router and user schema.
 
 ### Progress log
 
 | Date | Status | Update |
 | --- | --- | --- |
 | 2026-10-29 | Not started | Added the plan and its progress record; no implementation claimed. |
+| 2026-10-29 | In progress | Added service/routes, app router registration, and API coverage; focused tests passed. Final verification found the stored `[]` everyone edge case, which was fixed and covered by a regression test. |
+| 2026-10-29 | Complete | Focused B04 suite passed 19 tests and full repository suite passed 112 tests. |
 
 ## Goal
 

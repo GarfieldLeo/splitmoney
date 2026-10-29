@@ -4,25 +4,30 @@
 
 This section is the authoritative implementation and verification record for B06. Update it in the same change as the work; follow the [tracking rules](../README.md#progress-tracking-rules).
 
-- **Status:** Not started
+- **Status:** Complete
 - **Last updated:** 2026-10-29
-- **Current summary:** Plan written; this step has not been implemented or verified.
+- **Current summary:** Settlement CRUD is registered and implemented with atomic reference validation, merged PATCH validation, current participant names, and timestamp preservation. Focused and full test suites pass.
 
 ### Completion checklist
 
-- [ ] Implement all deliverables and instructions in this step.
-- [ ] Execute the required tests and acceptance checks; record actual results below.
-- [ ] Update affected documentation/contracts and record any deviations or limitations.
+- [x] Implement all deliverables and instructions in this step.
+- [x] Execute the required tests and acceptance checks; record actual results below.
+- [x] Update affected documentation/contracts and record any deviations or limitations.
 
 ### Completed work and changed files
 
-None yet. Record completed sub-tasks and the relevant file paths as implementation proceeds.
+- Added `app/services/settlements.py` with create, list, get, patch, and delete operations, reference validation, transaction handling, cent conversion, and current participant names.
+- Added `app/routes/settlements.py` with all five `/api/settlements` routes and registered the router in `app/main.py`.
+- Added `tests/test_settlements_api.py` covering CRUD, partial updates, timestamps, current names after rename, invalid references and amounts, self-payment validation, overpayment without expenses, canonical UUID path parsing, list order, and both user deletion restrictions.
 
 ### Verification evidence
 
 | Date | Command or manual scenario | Environment / data | Result and evidence |
 | --- | --- | --- | --- |
-| — | Not run | — | No implementation or verification evidence yet. |
+| 2026-10-29 | `python -m pytest tests/test_settlements_api.py` | Default Python 3.9.7; project requires Python >=3.11 | Could not load the app because `typing.TypeAlias` is unavailable in this interpreter; no tests collected. |
+| 2026-10-29 | `.venv/bin/python -m pytest tests/test_settlements_api.py` | Project virtualenv, Python 3.11.6 | Passed: 10 tests. One Starlette deprecation warning from the installed `httpx` test client. |
+| 2026-10-29 | `.venv/bin/python -m pytest` | Project virtualenv, Python 3.11.6 | Passed: 137 tests, including settlement, expense, user, database, validation, and balance tests. One Starlette deprecation warning from the installed `httpx` test client. |
+| 2026-10-29 | Independent QA: `.venv/bin/python -m pytest tests/test_settlements_api.py -q` and direct API sequence | Project `.venv`, temporary file-backed database | **Passed:** 10 tests; independent sequence confirmed sender/recipient direction, maximum payment with no debt, atomic rejection of both one-sided self-payment patches, deletion protection for both participants, and current sender name after rename. Reviewed merged validation and reference checks within the write transaction. One Starlette deprecation warning. |
 
 Replace the placeholder with actual results, including failures and unexecuted checks. Link supporting logs/screenshots where useful; this table remains the authoritative summary.
 
@@ -32,15 +37,16 @@ None yet. Record the reason for any change to this plan and update the shared co
 
 ### Remaining work and blockers
 
-All implementation and acceptance work described below remains. No blocker has been identified; prerequisites still need to be checked before starting.
+No implementation or verification work remains. The configured default shell Python is 3.9.7, but the repository virtualenv uses the required Python 3.11.6 and passes the full suite.
 
-**Next action:** After B01–B05, implement settlement services and participant validation with API tests.
+**Next action:** Independent review and downstream balance/QA integration.
 
 ### Progress log
 
 | Date | Status | Update |
 | --- | --- | --- |
-| 2026-10-29 | Not started | Added the plan and its progress record; no implementation claimed. |
+| 2026-10-29 | In progress | Confirmed B01–B05 prerequisites and began B06 implementation. |
+| 2026-10-29 | Complete | Implemented and registered settlement CRUD; focused tests passed (10), and the complete suite passed (137). |
 
 ## Goal
 

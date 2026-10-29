@@ -4,43 +4,49 @@
 
 This section is the authoritative implementation and verification record for B08. Update it in the same change as the work; follow the [tracking rules](../README.md#progress-tracking-rules).
 
-- **Status:** Not started
+- **Status:** Complete
 - **Last updated:** 2026-10-29
-- **Current summary:** Plan written; this step has not been implemented or verified.
+- **Current summary:** The balance aggregation service, read-only `GET /api/balances`, safe unexpected-error handling, and HTTP integration coverage are implemented. Independent QA and the full backend suite pass.
 
 ### Completion checklist
 
-- [ ] Implement all deliverables and instructions in this step.
-- [ ] Execute the required tests and acceptance checks; record actual results below.
-- [ ] Update affected documentation/contracts and record any deviations or limitations.
+- [x] Implement all deliverables and instructions in this step.
+- [x] Execute the required tests and acceptance checks; record actual results below.
+- [x] Update affected documentation/contracts and record any deviations or limitations.
 
 ### Completed work and changed files
 
-None yet. Record completed sub-tasks and the relevant file paths as implementation proceeds.
+Implemented `app/services/balances.py` to load expense and settlement rows once each and delegate to B07 dataclasses/helpers. `get_balances` reads users and all ledger records through one `read_connection` snapshot, combines cent-valued results, formats public amounts, sorts users by normalized username/UUID, and resolves current names for suggestions. Added the documented read-only route in `app/routes/balances.py`, registered it in `app/main.py`, and added an unexpected-error handler in `app/errors.py` that logs internal details while returning a generic JSON envelope. Added `tests/test_balances_api.py` for empty/one-user ledgers, the Q02 Alice/Bob/Cara sequence, CRUD recomputation, dynamic everyone membership versus explicit targets, rename behavior, odd-cent allocation, payer exclusion, overpayment, conservation, read-only repeated GETs, one-snapshot use, OpenAPI, and logged/safe handling of corrupt stored targets.
 
 ### Verification evidence
 
 | Date | Command or manual scenario | Environment / data | Result and evidence |
 | --- | --- | --- | --- |
-| — | Not run | — | No implementation or verification evidence yet. |
+| 2026-10-29 | `.venv/bin/python -m pytest tests/test_balances_api.py -q` | Project `.venv`; HTTP TestClient against isolated temporary SQLite databases | **Passed:** 5 tests in 0.19 seconds. One upstream Starlette/httpx deprecation warning. |
+| 2026-10-29 | `.venv/bin/python -m pytest -q` | Full backend suite in project `.venv` | **Passed:** 142 tests in 1.04 seconds. One upstream Starlette/httpx deprecation warning. |
+| 2026-10-29 | `git diff --check` | B08 implementation and plan changes | **Passed:** no whitespace errors. |
+| 2026-10-29 | Independent QA: `.venv/bin/python -m pytest -q` and source review | Project `.venv`, file-backed temporary SQLite fixtures | **Passed:** 142 tests. Reviewed single read snapshot, cent components, dynamic membership, no-write GET, and logged generic error handling; integration tests cover each. One Starlette deprecation warning. |
 
 Replace the placeholder with actual results, including failures and unexecuted checks. Link supporting logs/screenshots where useful; this table remains the authoritative summary.
 
 ### Decisions and deviations
 
-None yet. Record the reason for any change to this plan and update the shared contract if cross-feature behavior changes.
+No shared-contract changes. Added a generic `internal_error` JSON handler because B08 aggregation can detect malformed stored target UUIDs or other unexpected database-integrity failures; the details go to server logs and the response omits SQL and tracebacks.
 
 ### Remaining work and blockers
 
-All implementation and acceptance work described below remains. No blocker has been identified; prerequisites still need to be checked before starting.
+No remaining B08 work or blockers.
 
-**Next action:** After B03–B07, load a consistent database snapshot and connect it to the balance functions.
+**Next action:** Proceed to cross-feature QA and frontend integration.
 
 ### Progress log
 
 | Date | Status | Update |
 | --- | --- | --- |
 | 2026-10-29 | Not started | Added the plan and its progress record; no implementation claimed. |
+| 2026-10-29 | In progress | Began B08 after confirming B07 helpers and API balance response schemas are available; implementation and tests are pending. |
+| 2026-10-29 | In progress | Implemented and verified the balance API and integration cases. Both focused and full backend suites pass; handed off for independent review. |
+| 2026-10-29 | Complete | Independent QA reviewed the implementation and passed the full 142-test backend suite. |
 
 ## Goal
 

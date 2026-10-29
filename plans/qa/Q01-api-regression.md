@@ -4,43 +4,53 @@
 
 This section is the authoritative implementation and verification record for Q01. Update it in the same change as the work; follow the [tracking rules](../README.md#progress-tracking-rules).
 
-- **Status:** Not started
+- **Status:** Complete
 - **Last updated:** 2026-10-29
-- **Current summary:** Plan written; this step has not been implemented or verified.
+- **Current summary:** Added deterministic fixture data and isolated cross-feature HTTP workflows. The full backend suite passes 149 tests, including the independent QA run; Q03 links this evidence instead of repeating it.
 
 ### Completion checklist
 
-- [ ] Implement all deliverables and instructions in this step.
-- [ ] Execute the required tests and acceptance checks; record actual results below.
-- [ ] Update affected documentation/contracts and record any deviations or limitations.
+- [x] Implement all deliverables and instructions in this step.
+- [x] Execute the required tests and acceptance checks; record actual results below.
+- [x] Update affected documentation/contracts and record any deviations or limitations.
 
 ### Completed work and changed files
 
-None yet. Record completed sub-tasks and the relevant file paths as implementation proceeds.
+- Added [ledger.json](../../tests/fixtures/ledger.json) with the contract's fixed Alice, Bob, Cara, and Dan UUIDs.
+- Added `ledger_fixture_data` and `seed_ledger_users` fixtures in [conftest.py](../../tests/conftest.py). Fixed IDs enter tests only through this explicit database seeder; HTTP-created users are identified from response IDs.
+- Added [test_ledger_workflows.py](../../tests/test_ledger_workflows.py) covering the full Q02 numerical sequence through HTTP, selected targets and payer exclusion, future-member everyone splits, UUID-ordered odd cents, rename references, payment deletion and overpayment, error atomicity, persistence and database isolation, GET side effects, simultaneous login, and concurrent write/delete integrity.
+- Used a temporary SQLite path in every workflow; the API continues generating primary keys.
 
 ### Verification evidence
 
 | Date | Command or manual scenario | Environment / data | Result and evidence |
 | --- | --- | --- | --- |
-| — | Not run | — | No implementation or verification evidence yet. |
+| 2026-10-29 | `.venv/bin/python -m pytest tests/test_ledger_workflows.py tests/test_balances_api.py tests/test_users_api.py -q` | Project Python 3.11 virtual environment; each API fixture uses a temporary SQLite file | 31 passed. |
+| 2026-10-29 | `.venv/bin/python -m pytest -q` | Project Python 3.11 virtual environment; full test suite | 149 passed, 1 Starlette/httpx deprecation warning. An earlier run exposed a test assumption about which concurrent login spelling wins; the assertion now uses the canonical returned username, and the rerun passed. |
+| 2026-10-29 | `git diff --check` | Working tree | Passed with no whitespace errors. |
+| 2026-10-29 | Initial `python -m pytest tests/test_ledger_workflows.py -q` | Shell default Python 3.9.7 | Could not import the app because the repository requires Python 3.11+ (`datetime.UTC`); reran with the project's `.venv` Python 3.11. |
+| 2026-10-29 | Independent QA: `uv venv /tmp/splitmoney-q01-qa-venv --python 3.11`; `uv pip install --python /tmp/splitmoney-q01-qa-venv/bin/python -r requirements.lock`; `/tmp/splitmoney-q01-qa-venv/bin/python -m pytest -q` | Fresh Python 3.11.6 environment installed from lock; isolated temporary databases | **Passed:** 149 tests; one Starlette deprecation warning. Reviewed fixture isolation, integer-cent conservation, explicit sender/recipient assertions, read side effects, persistence, and concurrency tests. |
 
-Replace the placeholder with actual results, including failures and unexecuted checks. Link supporting logs/screenshots where useful; this table remains the authoritative summary.
+No browser checks were run; those belong to Q03. The optional local demo seed script was omitted.
 
 ### Decisions and deviations
 
-None yet. Record the reason for any change to this plan and update the shared contract if cross-feature behavior changes.
+- No shared contract changes were needed. Existing entity tests already cover single-route validation and CRUD; this step concentrates on cross-feature HTTP outcomes.
+- The optional `scripts/seed_demo.py` deliverable was omitted because it is not required for the automated QA step. API workflow tests seed their own temporary files, so a persistent local database seed command would add an unrelated entry point.
 
 ### Remaining work and blockers
 
-All implementation and acceptance work described below remains. No blocker has been identified; prerequisites still need to be checked before starting.
+No Q01 implementation or acceptance work remains; independent QA passed.
 
-**Next action:** After the backend track, create isolated deterministic fixtures and the primary API workflow test.
+**Next action:** Proceed to Q02 and Q03.
 
 ### Progress log
 
 | Date | Status | Update |
 | --- | --- | --- |
 | 2026-10-29 | Not started | Added the plan and its progress record; no implementation claimed. |
+| 2026-10-29 | In progress | Confirmed B01–B08 prerequisites and reviewed the shared contract, Q02 numerical sequence, and existing API tests. Starting isolated fixture and workflow implementation. |
+| 2026-10-29 | Complete | Added fixture helpers and cross-feature workflows; focused suite passed (31 tests), full suite passed (149 tests), and `git diff --check` passed. Ready for independent review. |
 
 ## Goal
 

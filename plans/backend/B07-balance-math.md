@@ -4,43 +4,45 @@
 
 This section is the authoritative implementation and verification record for B07. Update it in the same change as the work; follow the [tracking rules](../README.md#progress-tracking-rules).
 
-- **Status:** Not started
+- **Status:** Complete
 - **Last updated:** 2026-10-29
-- **Current summary:** Plan written; this step has not been implemented or verified.
+- **Current summary:** Implemented the pure integer-cent split, contribution, balance, and payment suggestion helpers. B07's isolated unit suite passes; the typed interfaces are ready for B08.
 
 ### Completion checklist
 
-- [ ] Implement all deliverables and instructions in this step.
-- [ ] Execute the required tests and acceptance checks; record actual results below.
-- [ ] Update affected documentation/contracts and record any deviations or limitations.
+- [x] Implement all deliverables and instructions in this step.
+- [x] Execute the required tests and acceptance checks; record actual results below.
+- [x] Update affected documentation/contracts and record any deviations or limitations.
 
 ### Completed work and changed files
 
-None yet. Record completed sub-tasks and the relevant file paths as implementation proceeds.
+Implemented `app/balances.py` with frozen input/result dataclasses, exact equal splitting, validated expense and settlement contributions, balance combination, and deterministic debtor-to-creditor suggestions. Added `tests/test_balances.py` with the listed numeric scenarios and 100 seeded generated ledgers. Interfaces were sent to the root agent for B08 integration.
 
 ### Verification evidence
 
 | Date | Command or manual scenario | Environment / data | Result and evidence |
 | --- | --- | --- | --- |
-| — | Not run | — | No implementation or verification evidence yet. |
+| 2026-10-29 | `.venv/bin/python -m pytest tests/test_balances.py` | macOS, Python 3.11.6; isolated pure unit suite | **Passed:** 20 tests in 0.06 seconds. One pre-existing Starlette/httpx deprecation warning from `fastapi.testclient`; no failures. |
+| 2026-10-29 | Independent QA: `.venv/bin/python -m pytest tests/test_balances.py -q` and direct ledger probe | Project `.venv`; 2-cent split over three people with duplicate targets and a 5-cent overpayment | **Passed:** 20 tests; remainder followed UUID order, overpayment reversed balances, suggested transfers zeroed all nets, and supplied user order was unchanged. One Starlette deprecation warning. |
 
 Replace the placeholder with actual results, including failures and unexecuted checks. Link supporting logs/screenshots where useful; this table remains the authoritative summary.
 
 ### Decisions and deviations
 
-None yet. Record the reason for any change to this plan and update the shared contract if cross-feature behavior changes.
+No contract changes or deviations. B07 uses typed dataclasses for database row adaptation and validates UUIDs, duplicate users, dangling references, and contribution conservation at the pure-function boundary.
 
 ### Remaining work and blockers
 
-All implementation and acceptance work described below remains. No blocker has been identified; prerequisites still need to be checked before starting.
+No remaining B07 implementation or acceptance work. B02's request validators are not imported; the balance module remains independent of FastAPI, SQLite, and unfinished application code.
 
-**Next action:** After B02, implement deterministic cent splitting and its pure unit tests.
+**Next action:** B08 can adapt database rows into `ExpenseInput` and `SettlementInput`, then pass the returned contribution maps into `combine_balances` and net values into `suggest_payments`.
 
 ### Progress log
 
 | Date | Status | Update |
 | --- | --- | --- |
-| 2026-10-29 | Not started | Added the plan and its progress record; no implementation claimed. |
+| 2026-10-29 | In progress | Began the pure module and isolated test suite after reviewing the shared contract and B08 integration requirements. |
+| 2026-10-29 | Complete | Implemented the B07 helpers and 20 isolated acceptance/invariant tests; `.venv/bin/python -m pytest tests/test_balances.py` passed. |
 
 ## Goal
 

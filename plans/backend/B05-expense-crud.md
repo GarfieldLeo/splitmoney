@@ -4,43 +4,47 @@
 
 This section is the authoritative implementation and verification record for B05. Update it in the same change as the work; follow the [tracking rules](../README.md#progress-tracking-rules).
 
-- **Status:** Not started
+- **Status:** Complete
 - **Last updated:** 2026-10-29
-- **Current summary:** Plan written; this step has not been implemented or verified.
+- **Current summary:** Expense service and CRUD routes are implemented and registered. All 15 focused API tests and the full 127-test suite pass.
 
 ### Completion checklist
 
-- [ ] Implement all deliverables and instructions in this step.
-- [ ] Execute the required tests and acceptance checks; record actual results below.
-- [ ] Update affected documentation/contracts and record any deviations or limitations.
+- [x] Implement all deliverables and instructions in this step.
+- [x] Execute the required tests and acceptance checks; record actual results below.
+- [x] Update affected documentation/contracts and record any deviations or limitations.
 
 ### Completed work and changed files
 
-None yet. Record completed sub-tasks and the relevant file paths as implementation proceeds.
+Implemented `app/services/expenses.py` with transactional reference validation, canonical target persistence, current-name response serialization, exact cents conversion, stable list ordering, immutable creation timestamps, and CRUD operations. Added the five `/api/expenses` routes in `app/routes/expenses.py` and registered them in `app/main.py`. Added 15 API tests covering CRUD, target semantics, unknown references, partial and combined edits, current names after rename, timestamps, ordering, validation, boundary amounts, and delete behavior.
 
 ### Verification evidence
 
 | Date | Command or manual scenario | Environment / data | Result and evidence |
 | --- | --- | --- | --- |
-| — | Not run | — | No implementation or verification evidence yet. |
+| 2026-10-29 | `.venv/bin/python -m pytest tests/test_expenses_api.py -q` | Project `.venv`, Python 3.11.6, file-backed temporary SQLite DBs via the shared client fixture | **Passed:** 15 tests. Covers list/create/get/patch/delete, everyone and explicit target semantics, unknown references and atomic failures, patch merging, controlled timestamps, renamed display names, deterministic ordering, amount validation/boundary, and error envelopes. One Starlette `httpx` deprecation warning. |
+| 2026-10-29 | `.venv/bin/python -m pytest -q` | Same environment and fixtures; complete repository suite | **Passed:** 127 tests. One Starlette `httpx` deprecation warning. |
+| 2026-10-29 | Independent QA: `.venv/bin/python -m pytest tests/test_expenses_api.py -q` and direct API sequence | Project `.venv`, file-backed temporary SQLite database | **Passed:** 15 tests; independent sequence confirmed uppercase UUID canonicalization, deduplicated explicit targets remaining fixed after a new member, omitted versus null target patches, current name after rename, unchanged creation timestamp, and no partial update for an invalid payer. Reviewed reference checks and writes in the same transaction. One Starlette deprecation warning. |
 
-Replace the placeholder with actual results, including failures and unexecuted checks. Link supporting logs/screenshots where useful; this table remains the authoritative summary.
+This table is the authoritative B05 verification summary.
 
 ### Decisions and deviations
 
-None yet. Record the reason for any change to this plan and update the shared contract if cross-feature behavior changes.
+No shared contract changes or deviations were needed.
 
 ### Remaining work and blockers
 
-All implementation and acceptance work described below remains. No blocker has been identified; prerequisites still need to be checked before starting.
+No B05 work remains. The route registration and endpoint tests passed in the complete repository suite.
 
-**Next action:** After B01–B04, implement expense create/read operations and target validation first.
+**Next action:** B06 can implement settlement CRUD using the same database, schema, and route conventions.
 
 ### Progress log
 
 | Date | Status | Update |
 | --- | --- | --- |
 | 2026-10-29 | Not started | Added the plan and its progress record; no implementation claimed. |
+| 2026-10-29 | In progress | Confirmed the shared contract, prerequisites, and existing DB/schema helpers; began B05 implementation. |
+| 2026-10-29 | Complete | Added the expense service and five routes, registered the router, and added 15 API tests. Focused tests passed (15); the full suite passed (127). |
 
 ## Goal
 

@@ -4,43 +4,48 @@
 
 This section is the authoritative implementation and verification record for B01. Update it in the same change as the work; follow the [tracking rules](../README.md#progress-tracking-rules).
 
-- **Status:** Not started
+- **Status:** Complete
 - **Last updated:** 2026-10-29
-- **Current summary:** Plan written; this step has not been implemented or verified.
+- **Current summary:** Added the isolated FastAPI factory, static placeholder, shared JSON error handlers, pinned dependency install, README, and per-test temporary database fixture. Verified all six B01 tests both in `.venv` and a clean Python 3.11 environment; verified the documented Uvicorn command starts and serves health. The scaffold does not open or create a database on import.
 
 ### Completion checklist
 
-- [ ] Implement all deliverables and instructions in this step.
-- [ ] Execute the required tests and acceptance checks; record actual results below.
-- [ ] Update affected documentation/contracts and record any deviations or limitations.
+- [x] Implement all deliverables and instructions in this step.
+- [x] Execute the required tests and acceptance checks; record actual results below.
+- [x] Update affected documentation/contracts and record any deviations or limitations.
 
 ### Completed work and changed files
 
-None yet. Record completed sub-tasks and the relevant file paths as implementation proceeds.
+Implemented the factory, per-instance database configuration, health route, root/static serving, and JSON handlers in `app/__init__.py`, `app/config.py`, `app/errors.py`, `app/main.py`, and `app/static/index.html`. Added isolated `TestClient` fixtures and health/config/validation-envelope coverage in `tests/conftest.py` and `tests/test_health.py`. Added Python metadata and an exact dependency lock in `pyproject.toml` and `requirements.lock`, setup/run/test/reset instructions in `README.md`, and SQLite/database sidecar ignores in `.gitignore`.
 
 ### Verification evidence
 
 | Date | Command or manual scenario | Environment / data | Result and evidence |
 | --- | --- | --- | --- |
-| — | Not run | — | No implementation or verification evidence yet. |
+| 2026-10-29 | `.venv/bin/python -m pytest tests/test_health.py` | Project `.venv`, Python 3.11.6 | **Passed:** 6 tests, including health JSON, root HTML, static mount, API 404 envelope, validation envelope compatible with B02 `ErrorEnvelope`, and independent app database paths. One Starlette deprecation warning recommends `httpx2`; required `httpx` TestClient works. |
+| 2026-10-29 | `uv venv /tmp/splitmoney-b01-venv --python 3.11`; `uv pip install --python /tmp/splitmoney-b01-venv/bin/python -r requirements.lock`; `/tmp/splitmoney-b01-venv/bin/python -m pytest tests/test_health.py` | Fresh Python 3.11.6 environment installed from the checked-in lock | **Passed:** lock installed 22 pinned packages and all 6 tests passed. Same Starlette deprecation warning. |
+| 2026-10-29 | `.venv/bin/python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000`, then `curl -i http://127.0.0.1:8000/api/health` | Project `.venv`; default database path | **Passed:** Uvicorn started, health returned HTTP 200 and `{"status":"ok"}`, and server shut down cleanly. |
+| 2026-10-29 | Initial validation-envelope test run | Project `.venv` | **Failed during test development:** a local postponed annotation was interpreted as a query parameter. The harness now uses an embedded body parameter; the final runs above pass. |
+| 2026-10-29 | Independent QA: `.venv/bin/python -m pytest tests/test_health.py -q`; Uvicorn reload startup on port 18765 and `curl /api/health`; separate factory configuration probe | Project `.venv`, Python 3.11; temporary paths and environment variable | **Passed:** 6 tests; live health returned `{"status":"ok"}`; explicit path overrides environment and factory construction did not create either database. Validation errors validate against B02's `ErrorEnvelope`. One Starlette deprecation warning. |
 
-Replace the placeholder with actual results, including failures and unexecuted checks. Link supporting logs/screenshots where useful; this table remains the authoritative summary.
+The clean-environment lock install and required server startup were both exercised. No other B01 acceptance check remains unrun.
 
 ### Decisions and deviations
 
-None yet. Record the reason for any change to this plan and update the shared contract if cross-feature behavior changes.
+Pinned direct dependencies in `pyproject.toml`; generated `requirements.lock` with `uv pip compile` so transitive versions are pinned for fresh installs. Exposed both `app.state.config.database_path` and `app.state.database_path` for straightforward downstream database helpers. Validation issues use the shared `loc`/`msg`/`type` shape and are checked against B02's `ErrorEnvelope`. The placeholder test checks stable page structure and branding so F01 can replace its copy. No shared contract changes or scope deviations.
 
 ### Remaining work and blockers
 
-All implementation and acceptance work described below remains. No blocker has been identified; prerequisites still need to be checked before starting.
+No B01 work remains. B03 can attach database initialization to the app lifecycle and read the configured path from `app.state.config.database_path` (also available directly at `app.state.database_path`). The current app intentionally has no database startup hook.
 
-**Next action:** Review the scaffold prerequisites, then configure Python dependencies and the app factory.
+**Next action:** Proceed to B02/B03 integration; B03 owns database initialization and lifecycle wiring.
 
 ### Progress log
 
 | Date | Status | Update |
 | --- | --- | --- |
-| 2026-10-29 | Not started | Added the plan and its progress record; no implementation claimed. |
+| 2026-10-29 | In progress | Reviewed the shared contract, B01 requirements, and B02 boundary. Confirmed Python 3.11 and compatible FastAPI/Uvicorn/pytest/httpx packages are available in the project `.venv`; no `AGENTS.md` applies. |
+| 2026-10-29 | Complete | Implemented the scaffold and documentation; six tests passed in both project and clean environments, and Uvicorn/health startup passed. Recorded the one corrected test-harness failure and the non-blocking Starlette deprecation warning above. |
 
 ## Goal
 
