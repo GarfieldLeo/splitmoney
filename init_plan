@@ -8,3 +8,5 @@ db can njust be sqlite   a user table, with uuid + one column on username + one 
 the UIUX should be optimized for mobile. 
 
 we can just start with a fastapi server for the backend can be sqlite since there will be max 20 users. for FE I think we can just have a html page + js to route to the fastapi server. 
+
+we should have another api to calculate the current expenses & settlement. we should have a function to query the expense table to get a list of (money_in, money_out). we should have a core function that input a list of user (money_out, money_in), have another function that pulls settle ment table to give a list of (money_out, money_in) and then have a core fucntion to pull from both table, calculate net_money for each user, then sort + use 2 pointer to resolve who should pay who by how much as of the current state. 
