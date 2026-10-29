@@ -4,6 +4,8 @@
 
 Give backend, frontend, and QA one concrete set of behaviors. The initial plan leaves edge cases open; the decisions below are the proposed defaults for implementation.
 
+**Pending approved change (2026-10-29):** [BR-001](bug_reports.md#br-001--enforce-logged-in-identity-and-ownership-on-modifications-and-deletion) requires logged-in identity and ownership checks on modifications and deletion. The payer is the expense/payment owner; profile changes are self-only. This supersedes the unrestricted-mutation policy below for future implementation. The current application still follows the original contract; implementation is explicitly deferred, and remaining identity/payer-change decisions are tracked in that report.
+
 ## Identity and group membership
 
 - Use UUID strings for every primary key and stored user reference. API responses also supply usernames for presentation. Do not use usernames as foreign keys: renaming a person must preserve history.

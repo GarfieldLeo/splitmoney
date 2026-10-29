@@ -2,6 +2,8 @@
 
 Turn the goals in [`../init_plan`](../init_plan) into small, independently verifiable changes. These files are the single source of truth for the planned work and its implementation progress. Each step's Progress section records its current implementation status, verification evidence, decisions, and any remaining limitations.
 
+User-approved defects and subsequent requirement changes are tracked in [bug_reports.md](bug_reports.md). BR-001 records the pending requirement to restrict modifications and deletion to the logged-in user and permitted record owner. It supersedes unrestricted editing as a future requirement; implementation is deferred, and the existing completion evidence describes the original contract.
+
 ## Product goal
 
 A single shared expense group for roughly 20 people. Anyone enters a username to join or return, records expenses and payments, and sees who should pay whom. Use FastAPI, SQLite, and mobile-friendly HTML/CSS/JavaScript served by the same application.
@@ -76,4 +78,4 @@ The linear backend order is the simplest execution order, not a requirement that
 
 ## Scope boundaries
 
-One group, one currency (USD), equal splits, no passwords, no notification sending, no payment processor, and no multi-group permissions. This is a trusted shared ledger: selecting a username is identification, not security. Phone numbers are optional stored profile data. Suggestions are not recorded payments until someone explicitly records them.
+The original implemented scope is one group, one currency (USD), equal splits, no passwords, no notification sending, no payment processor, and no multi-group permissions. Selecting a username currently provides identification, not security. [BR-001](bug_reports.md#br-001--enforce-logged-in-identity-and-ownership-on-modifications-and-deletion) changes the future identity/ownership requirements; its policy decisions and implementation remain pending. Phone numbers are optional stored profile data. Suggestions are not recorded payments until someone explicitly records them.
