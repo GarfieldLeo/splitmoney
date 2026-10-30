@@ -19,6 +19,8 @@ Give backend, frontend, and QA one concrete set of behaviors. The initial plan l
 
 ## Money and timestamps
 
+**Pending approved change (2026-10-29):** [BR-002](bug_reports.md#br-002--cap-each-expense-at-10000000-and-retain-exact-money-arithmetic) sets a future inclusive cap of **$100,000.00 per expense**. It does not cap aggregate totals or change payment limits. The larger maximum below remains the current implementation until this deferred change is completed.
+
 - USD only; positive amounts, maximum `$999,999,999.99` per record, at most two fractional digits. Reject zero, negative, malformed, NaN, infinity, and more than two decimals; do not silently round inputs.
 - JSON input/output amounts are decimal strings: `"12.34"`. Store integer `amount_cents`; arithmetic is integer only. This deliberately refines the original proposal of floating-point dollar values to prevent balance drift.
 - UUIDs are generated on creation. Timestamps are UTC ISO 8601 strings with a `Z` suffix. Preserve `created_at` on updates and refresh `modified_at`.

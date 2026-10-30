@@ -2,7 +2,7 @@
 
 Turn the goals in [`../init_plan`](../init_plan) into small, independently verifiable changes. These files are the single source of truth for the planned work and its implementation progress. Each step's Progress section records its current implementation status, verification evidence, decisions, and any remaining limitations.
 
-User-approved defects and subsequent requirement changes are tracked in [bug_reports.md](bug_reports.md). BR-001 records the pending requirement to restrict modifications and deletion to the logged-in user and permitted record owner. It supersedes unrestricted editing as a future requirement; implementation is deferred, and the existing completion evidence describes the original contract.
+User-approved defects and subsequent requirement changes are tracked in [bug_reports.md](bug_reports.md). BR-001 records pending identity/ownership enforcement; BR-002 records the pending $100,000.00 maximum per expense and numeric robustness checks. Implementation is deferred, and existing completion evidence describes the original contract. The screenshot-based UX review and proposed improvements live in [ux_enhancement.md](ux_enhancement.md); proposals are not implemented behavior.
 
 ## Product goal
 
